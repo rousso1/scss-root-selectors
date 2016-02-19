@@ -1,4 +1,4 @@
-# Easily write concise, DRY, maintainable and scalable SCSS code in a large repo. — Edit
+# Easily write concise, DRY, maintainable and scalable SCSS code in a large repo
 # *WORK IN PROGRESS*
 
 ---
