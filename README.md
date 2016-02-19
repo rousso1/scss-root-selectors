@@ -37,19 +37,57 @@ A large scale front-end project, with dozens of contributors, thousands of files
 ## A Holistic Solution
 
 ---
-#### The *most important* guideline
+####1. The *most important* guideline
+ * Stick to your project's components abstraction, and split all css to scss modules accordingly. If a file creates DOM - create a corresponding scss file, with the same name. e.g. for file `filename.html`, create a `filename.scss` file next to it in the same folder just next to it.
  * Depending on your choice of framework (Angular, React, Ember or any other), your project has a way it declares DOM. Could be a js component file, an SVG file, an [rt](https://github.com/wix/react-templates) file, haml file, plain html file, etc.
- * Stick to your project's components abstraction, and split all css to scss modules accordingly. For each file which creates DOM - create a corresponding scss file, with the same name.
- * e.g. For each file `filename.html`, create a `filename.scss` file next to it in the same folder just next to it.
- * `filename.scss` should contain all --->
+ * `filename.scss` should contain all styling for `filename.html`, and only its styling.
  
-  
+---
+#####2. Every scss file should have a *single* root selector matching the rt root element. 
 
-   * Stick with your project's components abstraction, and split all css to scss modules accordingly.<br> e.g. ng-templates in an angular.js project, html/haml if you use those, [jsx](https://facebook.github.io/jsx/) or [react templates](https://github.com/wix/react-templates) files in a react project, etc. I will use rt files [react templates](https://github.com/wix/react-templates) in the examples below
-   * For each file `filename.html` (or `filename.svg` or `filename.js` or `filename.haml` - however DOM is created), create a `filename.scss` file next to it in the same folder just next to it
-   * `filename.scss` should contain all scss code which refers to any DOM defined in filename.html
+Everything else should be nested. This selector should be unique at the application level, this is enforced with [a grunt task](#a-grunt-task-to-enforce-namespacing). e.g:
+
+```scss
+.my-comp {
+   position: relative;
+   height: 10px;
+
+   > .label {
+       font-size: 14px;
+   } 
+}
+```
 
 ---
+#####3. Styling nested components is done in the nested components corresponding scss file. 
+
+e.g: If `my-comp.html` has a child component `child.html`, the styling of `child.html` is done in `child.scss` using a parent selector (this strictly follows [rule #1 above]()):
+    
+```scss
+//child.scss:
+
+.child {
+    position: relative;
+
+    //overrides:
+    .my-comp & {
+       //when .child has .my-comp as an ancestor, we want to style it differently:
+       position: absolute; 
+    } 
+}
+```
+This probably looks like a bad seperation of concerns, and it probably bothers you that `.child` knows about `.my-comp` intimately. And thoughts about how does child.scss go open source from here, where every small component knows about all its overrides.
+Well, currently all of these overrides exist in the project, only they are scattered around different files, probably organized by features, and not by DOM (as [rule #1]() says). So refactoring `.child` (e.g rename to `.boy`) is much harder if you have this css all around your project, where other components override it.
+Moreover, consider a situation where `.my-comp` and `.my-comp2` both override `.child`. If those overrides won't be placed in the same place inside child.scss, most likely they will duplicate the styling and we'll result with more outputted css. In our case, we will just append `.my-comp2` to the existing selector:
+```scss
+.my-comp &, 
+.my-comp2 & {
+  position: absolute;
+}
+
+```
+Going "open source" with child.scss
+
 
 #### Best practices to write DRY and scallable SCSS code
 #### root-selectors-helpers.scss library to enhance expression ability
