@@ -11,7 +11,7 @@ Table of contents:
    * [The root-selectors.scss library](#the-root-selectors-scss-library)
    * [A well configured SCSS linter](#a-well-configured-scss-linter)
    * [A grunt task to enforce namespacing](#a-grunt-task-to-enforce-namespacing)
-  * [A comparison table to other css solutions](#popular-existing-solutions)
+  * [A comparison table to other css solutions](#comparison-with-other-css-solutions)
   * [Conclusion](#conclusion)
 
 ---
@@ -43,7 +43,7 @@ A large scale front-end project, with dozens of contributors, thousands of files
 
 ---
 
-## Popular Existing Solutions
+## Comparison with other css solutions
   * BEM
   * OOCSS
   * SMACSS
