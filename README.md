@@ -88,8 +88,9 @@ If not, and you just want to change the button's style given it has a specific a
     } 
 }
 ```
-This may look like a bad seperation of concerns, and it probably bothers you that `.button` knows about `.my-comp` intimately. And thoughts about how does button.scss go open source from here, and worries that button.scss will get bloated from all the possible overrides it has in the project.
-Well, currently all of these overrides anyways exist in the project, only they are scattered around different files, probably organized by features, and not by DOM (as [rule #1](#1-the-most-important-guideline) says). So refactoring the classname `.button` (e.g rename to `.something-else`) is much harder if you have this css all around your project, where many other components override it.
+This may look like a bad seperation of concerns, and it probably bothers you that `.button` knows about `.my-comp` intimately. And thoughts about how does button.scss go open source from here, and worries that button.scss will get bloated from all the possible overrides it has in the project.<br>
+Well, all of these overrides anyways exist in the project, only they are scattered around different files, probably organized by features, and not by DOM (as [rule #1](#1-the-most-important-guideline) says).<br>
+So refactoring the classname `.button` (e.g rename to `.something-else`) is much harder if you have this css all around your project, where many other components override it.
 Moreover, consider a situation where `.my-comp` and `.my-comp2` both override `.child`. If those overrides won't be placed in the same place inside child.scss, most likely they will duplicate the styling and we'll result with more outputted css. In our case, we will just append `.my-comp2` to the existing selector:
 ```scss
 //overrides:
