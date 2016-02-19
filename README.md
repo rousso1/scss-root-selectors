@@ -1,4 +1,4 @@
-# How to write concise, DRY, maintainable and refactor-able SCSS code in a large repo - With ease. — Edit
+# Easily write concise, DRY, maintainable and refactor-able SCSS code in a large repo. — Edit
 # *WORK IN PROGRESS*
 
 ---
