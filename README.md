@@ -1,19 +1,23 @@
-# Easily write concise, DRY, maintainable and scalable SCSS code in a large repo
 # *WORK IN PROGRESS*
+# *Easily write concise, DRY, maintainable and scalable SCSS code in a large repo*
 
 ---
 
 Table of contents:
   * [Motivation](#motivation)
   * [The main problems with CSS at scale](#the-main-problems-with-css-at-scale)
-  * [The Solution](#the-solution)
+  * [A holistic solution](#a-holistic-solution)
+   * [A few best practices to write SCSS code]()
+   * [The root-selectors.scss library]()
+   * [A well configured SCSS linter]()
+   * [A grunt task to enforce namespacing]()
   * [A comparison table to other css solutions](#popular-existing-solutions)
   * [Conclusion](#conclusion)
 
 ---
 
 ## Motivation
-CSS (and SCSS) tends to get messy. 
+CSS (and SCSS) tends to get messy.<br>
 In a small project with just a few contributors, one can probably just read through the whole css code, hack in desired changes, and chances are not much will break. It doesn't matter if the css is ugly - as long as it just works. A glimpse at the output in the browser will tell you if things are working.
 <br>
 A large scale front-end project, with dozens of contributors, thousands of files, components, abstractions and a huge number of possible UI states - requires a different strategy. In this case, the CSS code should be readable and easy for refactoring. And in many cases the person who is about to make changes is not the person who originally wrote the code.
@@ -22,20 +26,20 @@ A large scale front-end project, with dozens of contributors, thousands of files
 ---
 
 ## The main problems with CSS at scale 
-   * CSS is all at the global namespace (just like javascript)
-   * Refactoring is complex; Hard to eliminate dead code (unreachable selectors)
-   * Hard to know the visual output just by looking at the code.
-   * Bloated stylesheets may lead to performance problems.
-   * Its hard to write scoped CSS.
+  * CSS is all at the global namespace (just like javascript)
+  * Refactoring is complex; Hard to eliminate dead code (unreachable selectors)
+  * Hard to know the visual output just by looking at the code.
+  * Bloated stylesheets may lead to performance problems.
+  * Its hard to write scoped CSS.
    
 --- 
 
-## The Solution
-1. The architecture of scss in your project
-2. 7 Guidelines to rule them all
-3. root-selectors-helpers.scss library to enhance expression ability
-4. A well configured SCSS linter.
-5. A grunt task to enforce namespacing.
+## A Holistic Solution
+
+#### A few rules to write SCSS code
+#### root-selectors-helpers.scss library to enhance expression ability
+#### A well configured SCSS linter.
+#### A grunt task to enforce namespacing.
 
 ---
 
