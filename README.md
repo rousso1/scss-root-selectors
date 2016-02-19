@@ -4,7 +4,7 @@
 ---
 
 Table of contents:
-  * [Motivation](#Motivation)
+  * [Motivation](#motivation)
   * [The main problems with CSS at scale](#The main problems with CSS at scale)
   * [The Solution](#The Solution)
   * [A comparison table to other css solutions](#Popular Existing Solutions)
