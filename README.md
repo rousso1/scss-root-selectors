@@ -7,7 +7,7 @@ Table of contents:
   * [Motivation](#motivation)
   * [The main problems with CSS at scale](#the-main-problems-with-css-at-scale)
   * [A holistic solution](#a-holistic-solution)
-   * [A few best practices to write SCSS code]()
+   * [Best practices to write DRY and scallable SCSS code]()
    * [The root-selectors.scss library]()
    * [A well configured SCSS linter]()
    * [A grunt task to enforce namespacing]()
@@ -36,7 +36,7 @@ A large scale front-end project, with dozens of contributors, thousands of files
 
 ## A Holistic Solution
 
-#### A few rules to write SCSS code
+#### Best practices to write DRY and scallable SCSS code
 #### root-selectors-helpers.scss library to enhance expression ability
 #### A well configured SCSS linter.
 #### A grunt task to enforce namespacing.
