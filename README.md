@@ -36,6 +36,21 @@ A large scale front-end project, with dozens of contributors, thousands of files
 
 ## A Holistic Solution
 
+---
+#### The *most important* guideline
+ * Depending on your choice of framework (Angular, React, Ember or any other), your project has a way it declares DOM. Could be a js component file, an SVG file, an [rt](https://github.com/wix/react-templates) file, haml file, plain html file, etc.
+ * Stick to your project's components abstraction, and split all css to scss modules accordingly. For each file which creates DOM - create a corresponding scss file, with the same name.
+ * e.g. For each file `filename.html`, create a `filename.scss` file next to it in the same folder just next to it.
+ * `filename.scss` should contain all --->
+ 
+  
+
+   * Stick with your project's components abstraction, and split all css to scss modules accordingly.<br> e.g. ng-templates in an angular.js project, html/haml if you use those, [jsx](https://facebook.github.io/jsx/) or [react templates](https://github.com/wix/react-templates) files in a react project, etc. I will use rt files [react templates](https://github.com/wix/react-templates) in the examples below
+   * For each file `filename.html` (or `filename.svg` or `filename.js` or `filename.haml` - however DOM is created), create a `filename.scss` file next to it in the same folder just next to it
+   * `filename.scss` should contain all scss code which refers to any DOM defined in filename.html
+
+---
+
 #### Best practices to write DRY and scallable SCSS code
 #### root-selectors-helpers.scss library to enhance expression ability
 #### A well configured SCSS linter.
