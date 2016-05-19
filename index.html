@@ -373,8 +373,10 @@ Classes modes for a selector:<br></p>
 <hr>
 
 <p>A better approach: DRY, concise, extensible, refactorable, DOM-like structure:</p>
-
-<div class="highlight highlight-source-scss"><pre><span class="pl-e">.control-checkbox</span> {
+<table>
+  <tr>
+    <td>
+      <div class="highlight highlight-source-scss"><pre><span class="pl-e">.control-checkbox</span> {
   <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">inline-block</span>;
   <span class="pl-c1"><span class="pl-c1">cursor</span></span>: <span class="pl-c1">pointer</span>;
 
@@ -411,10 +413,9 @@ Classes modes for a selector:<br></p>
     }
   }
 }</pre></div>
-
-<hr>
-
-<p>Compiled CSS Code:</p>
+    </td>
+    <td>
+      <p>Compiled CSS Code:</p>
 
 <div class="highlight highlight-source-css"><pre><span class="pl-e">.control-checkbox</span> {
   <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">inline-block</span>;
@@ -446,8 +447,10 @@ Classes modes for a selector:<br></p>
 <span class="pl-e">.beautiful.control-checkbox</span><span class="pl-e">:hover</span> &gt; <span class="pl-e">.input</span> + <span class="pl-e">.content</span> {
   <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-id">grey</span>;
 }</pre></div>
+    </td>
+  </tr>
+</table>
 
-<hr>
 
 <h2>
 <a id="grunt-task" class="anchor" href="#grunt-task" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Grunt task</h2>
