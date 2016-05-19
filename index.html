@@ -1,1 +1,513 @@
-<h1>hello</h1>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Consass by rousso1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Consass</h1>
+      <h2 class="project-tagline">Concise SASS. A DRY, maintainable and scalable SCSS solution for styling large scale projects</h2>
+      <a href="https://github.com/rousso1/consass" class="btn">View on GitHub</a>
+      <a href="https://github.com/rousso1/consass/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/rousso1/consass/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="consass-concise-sass" class="anchor" href="#consass-concise-sass" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>consass (Concise SASS)</h1>
+
+<h2>
+<a id="a-dry-maintainable-and-scalable-scss-solution-for-styling-large-scale-projects" class="anchor" href="#a-dry-maintainable-and-scalable-scss-solution-for-styling-large-scale-projects" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>A DRY, maintainable and scalable SCSS solution for styling large scale projects</h2>
+
+<hr>
+
+<h2>
+<a id="the-main-problems-with-css-at-large-scale-apps" class="anchor" href="#the-main-problems-with-css-at-large-scale-apps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The main problems with css at large scale apps:</h2>
+
+<ul>
+<li>CSS is all at the global namespace (just as js is)</li>
+<li>Refactoring is complex; hard to eliminate dead code (dead selectors)</li>
+<li>Hard to know the visual output just by looking at the code - usually need to open browser and inspect.</li>
+<li>Hard to write scoped styling rules without affecting children, as it should be in a components-based application.</li>
+<li>Bloated stylesheets may lead to performance problems.</li>
+<li>BEM, Atomic, css modules - its not it.</li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="ask-yourself-are-you-happy-with-your-projects-css-the-way-it-is-now" class="anchor" href="#ask-yourself-are-you-happy-with-your-projects-css-the-way-it-is-now" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ask yourself: are you happy with your project's css the way it is now?</h2>
+
+<hr>
+
+<p>The solution consists of 4 parts:</p>
+
+<ul>
+<li><a href="#guidelines">Six guidelines for coding style</a></li>
+<li><a href="#expressing-a-component-conditional-statesmodes-with-regard-to-the-root-state-class---using-the-root-selectors-library">SCSS root-selectors lib</a></li>
+<li><a href="#grunt-task">Grunt task</a></li>
+<li><a href="#scss-lint-configuration">scss-lint yml config file</a></li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="guidelines" class="anchor" href="#guidelines" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Guidelines</h2>
+
+<p>By following these guidelines, gain control over the css technical debt in your project. </p>
+
+<ul>
+<li>Scale as you grow</li>
+<li>Refactor easily</li>
+<li>Easy to step into someone else's code</li>
+<li>Easy to integrate into an existing project</li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="the-most-important-guideline" class="anchor" href="#the-most-important-guideline" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The <em>most important</em> guideline</h2>
+
+<ul>
+<li>Split css to scss modules following the projects components abstraction (e.g. rt files)</li>
+<li>For each file <code>filename.rt</code>, create a <code>filename.scss</code> file next to it in the same folder .</li>
+<li>Only write style rules which refer to the DOM structure that belongs to the specific RT. </li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="best-practices" class="anchor" href="#best-practices" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Best practices</h2>
+
+<hr>
+
+<h5>
+<a id="1-one-scss-file-per-rt-file-also-per-svg-file-skin-or-any-other-piece-of-domtemplate-file" class="anchor" href="#1-one-scss-file-per-rt-file-also-per-svg-file-skin-or-any-other-piece-of-domtemplate-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. One scss file per rt file (also per svg file, skin, or any other piece of dom/template file).</h5>
+
+<p>e.g:</p>
+
+<div class="highlight highlight-source-shell"><pre>angle.rt
+angle.scss</pre></div>
+
+<hr>
+
+<h5>
+<a id="2-every-scss-file-should-have-a-single-root-selector-matching-the-rt-root-element" class="anchor" href="#2-every-scss-file-should-have-a-single-root-selector-matching-the-rt-root-element" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2. Every scss file should have a <em>single</em> root selector matching the rt root element.</h5>
+
+<p>Everything else should be nested. This selector should be unique at the application level. e.g:</p>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-e">.control-angle</span> {
+   <span class="pl-c1"><span class="pl-c1">position</span></span>: <span class="pl-c1">relative</span>;
+   <span class="pl-c1"><span class="pl-c1">height</span></span>: <span class="pl-c1">10</span><span class="pl-k">px</span>;
+
+   &gt; <span class="pl-e">.control-label</span> {
+       <span class="pl-c1"><span class="pl-c1">font-size</span></span>: <span class="pl-c1">14</span><span class="pl-k">px</span>;
+   } 
+}</pre></div>
+
+<hr>
+
+<h5>
+<a id="3-styling-nested-components-is-done-in-the-nested-components-corresponding-scss-file" class="anchor" href="#3-styling-nested-components-is-done-in-the-nested-components-corresponding-scss-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3. Styling nested components is done in the nested components corresponding scss file.</h5>
+
+<p>e.g: <code>angle.rt</code> has a child component <code>stepper.rt</code>, and configuring its style is done in <code>stepper.scss</code> using a parent selector:</p>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-c">//stepper.scss:</span>
+
+<span class="pl-e">.input-stepper</span> {
+    <span class="pl-c1"><span class="pl-c1">position</span></span>: <span class="pl-c1">relative</span>;
+
+<span class="pl-c">    //overrides:</span>
+    <span class="pl-e">.control-angle</span> <span class="pl-ent">&amp;</span> {
+       <span class="pl-c1"><span class="pl-c1">position</span></span>: <span class="pl-c1">absolute</span>;
+    } 
+}</pre></div>
+
+<hr>
+
+<h5>
+<a id="4-always-prefer-immediate-child-selector--over-regular-descendent-selector" class="anchor" href="#4-always-prefer-immediate-child-selector--over-regular-descendent-selector" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>4. Always prefer immediate child selector (&gt;) over regular descendent selector:</h5>
+
+<p>they perform better, and they also help preventing bleeding css to nested components.</p>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-c">//dont:</span>
+<span class="pl-e">.parent-class</span> {
+<span class="pl-c">    //dont:</span>
+    <span class="pl-e">.child-class</span> {
+        <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">red</span>;
+    }
+
+<span class="pl-c">    //do:</span>
+    &gt; <span class="pl-e">.child-class</span> {
+        <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">red</span>;
+    }
+}</pre></div>
+
+<hr>
+
+<h5>
+<a id="5-avoid-tagname-selectors-prefer-a-semantic-class-selector" class="anchor" href="#5-avoid-tagname-selectors-prefer-a-semantic-class-selector" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>5. Avoid tagName selectors, prefer a semantic class selector:</h5>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-e">.component</span> {
+<span class="pl-c">    //dont:</span>
+    <span class="pl-ent">span</span> {
+        <span class="pl-c1"><span class="pl-c1">font-size</span></span>: <span class="pl-c1">14</span><span class="pl-k">px</span>;
+    }
+
+<span class="pl-c">    //do:</span>
+    &gt; <span class="pl-e">.button-label</span> {
+            <span class="pl-c1"><span class="pl-c1">font-size</span></span>: <span class="pl-c1">14</span><span class="pl-k">px</span>;
+        }
+    }
+}</pre></div>
+
+<hr>
+
+<h5>
+<a id="6-avoid-wildcard-selectors----they-affect-child-components-and-bleed-css" class="anchor" href="#6-avoid-wildcard-selectors----they-affect-child-components-and-bleed-css" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>6. Avoid wildcard selectors (*) - they affect child components and bleed css.</h5>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-c">//dont:</span>
+<span class="pl-ent">*</span> {
+
+}
+
+<span class="pl-c">//do: specify what you style</span>
+<span class="pl-e">.selector1</span>,
+<span class="pl-e">.selector2</span>, 
+<span class="pl-e">.selector3</span> {
+<span class="pl-c">        //css here</span>
+}</pre></div>
+
+<hr>
+
+<h2>
+<a id="expressing-a-component-conditional-statesmodes-with-regard-to-the-root-state-class---using-the-root-selectors-library" class="anchor" href="#expressing-a-component-conditional-statesmodes-with-regard-to-the-root-state-class---using-the-root-selectors-library" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Expressing a component conditional states/modes with regard to the root state (class) - using the root-selectors library</h2>
+
+<hr>
+
+<ul>
+<li>Given a simple component with some nesting:</li>
+</ul>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-e">.a-root-selector</span> {
+  &gt; <span class="pl-e">.a-first-child</span> {
+    &gt; <span class="pl-e">.a-second-child</span> {
+      <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">blue</span>;
+    }
+  }
+}</pre></div>
+
+<hr>
+
+<p>If we want <code>.a-second-child</code> to receive <code>color: orange;</code> when the component has another root class. (e.g. <code>.show-on-all-pages</code>), we can use the ancestor selector (<code>&amp;</code>):</p>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-e">.a-root-selector</span> {
+  &gt; <span class="pl-e">.a-first-child</span> {
+    &gt; <span class="pl-e">.a-second-child</span> {
+      <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">blue</span>;
+      <span class="pl-e">.show-on-all-pages</span> <span class="pl-ent">&amp;</span> {
+        <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">orange</span>
+      }
+    }
+  }
+}</pre></div>
+
+<hr>
+
+<p>It will give us the following css, where <code>.show-on-all-pages</code> is an ancestor or <code>.a-root-selector</code>:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.a-root-selector</span> &gt; <span class="pl-e">.a-first-child</span> &gt; <span class="pl-e">.a-second-child</span> {
+  <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">blue</span>;
+}
+
+<span class="pl-e">.show-on-all-pages</span> <span class="pl-e">.a-root-selector</span> &gt; <span class="pl-e">.a-first-child</span> &gt; <span class="pl-e">.a-second-child</span> {
+  <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">orange</span>;
+}</pre></div>
+
+<hr>
+
+<p>If you need to have it on the same root selector, you'll need to use a mixin:</p>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-e">.a-root-selector</span> {
+  &gt; <span class="pl-e">.a-first-child</span> {
+    &gt; <span class="pl-e">.a-second-child</span> {
+      <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">blue</span>;
+      <span class="pl-k">@include</span> <span class="pl-c1">when-root-has-class</span>(<span class="pl-v">show-on-all-pages</span>) {
+        <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">orange</span>;
+      }
+    }
+  }
+}</pre></div>
+
+<hr>
+
+<p>Will give you the following css (note there is no space)</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.a-root-selector</span> &gt; <span class="pl-e">.a-first-child</span> &gt; <span class="pl-e">.a-second-child</span> {
+  <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">blue</span>;
+}
+
+<span class="pl-e">.show-on-all-pages.a-root-selector</span> &gt; <span class="pl-e">.a-first-child</span> &gt; <span class="pl-e">.a-second-child</span> {
+  <span class="pl-c1"><span class="pl-c1">color</span></span>: <span class="pl-c1">orange</span>;
+}</pre></div>
+
+<hr>
+
+<p>Similarly, the following SCSS mixins are available for your use as part of the framework:<br><br>
+Classes modes for a selector:<br></p>
+
+<ul>
+<li>
+<code>when-root-has-class($class-name)</code>: when the specified classes is authored on the root level.</li>
+<li>
+<code>when-root-has-any-class($class-names)</code>: one of the specified classes (one or many) is authored on the root level</li>
+<li>
+<code>when-root-has-all-classes($class-names)</code>: all specified classes (one or many) are authored on the root level</li>
+</ul>
+
+<hr>
+
+<p>Pseudo class modes for a selector:<br></p>
+
+<ul>
+<li>
+<code>when-root-has-pseudo-class($pseudo-class)</code>: The specified pseudo class is authored on the root level</li>
+<li>
+<code>when-root-has-all-pseudo-classes($pseudo-classes)</code>: all specified pseudo classes are authored on the root level</li>
+<li>
+<code>when-root-has-any-pseudo-classes($pseudo-class-names)</code>: any of the specified pseudo classes are authored on the root level.</li>
+</ul>
+
+<hr>
+
+<p>class and pseudo-class together<br></p>
+
+<ul>
+<li>
+<code>when-root-has-all($class-names, $pseudo-class-names)</code>: all specified combination of class names and pseudo classes are authored on the root level.</li>
+<li>
+<code>when-root-has-any($class-names, $pseudo-class-names)</code>: any of the specified combination of class names/pseudo class names are authored on the root level.</li>
+</ul>
+
+<hr>
+
+<p>Ancestor conditions:<br></p>
+
+<ul>
+<li>
+<code>when-parent-has-pseudo($pseudo-classes)</code>: if previous part of selector has the specified pseudo classes, apply the styling.</li>
+<li>
+<code>when-ancestor-has-pseudo($pseudo-classes, $levels)</code>: when an ancestor up the selector has the specified pseudo classes, apply the styling. The ancestor is specified by an number of levels up the selector.</li>
+<li>see <a href="https://github.com/wix/santa-editor/blob/master/packages/baseUI/src/main/framework/rootSelectorHelpers.scss">root selector helpers</a>
+</li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="example-a-custom-checkbox" class="anchor" href="#example-a-custom-checkbox" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example: A custom checkbox</h2>
+
+<ul>
+<li>Specified colors for various different modes (regular / hover / selected)</li>
+<li>Needs to have a "beautiful" mode which specifies different styling.
+(See the Pen <a href="http://codepen.io/eitaneitan/pen/zqeMZM/">zqeMZM</a> by Eitan (<a href="http://codepen.io/eitaneitan">@eitaneitan</a>) on <a href="http://codepen.io">CodePen</a>.)</li>
+</ul>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">label</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>control-checkbox<span class="pl-pds">"</span></span>&gt;
+  &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>checkbox<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>input<span class="pl-pds">"</span></span> /&gt;
+  &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>content<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">label</span>&gt;</pre></div>
+
+<hr>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-e">.control-checkbox</span> {
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">inline-block</span>;
+  <span class="pl-c1"><span class="pl-c1">cursor</span></span>: <span class="pl-c1">pointer</span>;
+
+  &gt; <span class="pl-e">.input</span> {
+    <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">none</span>;
+
+    + <span class="pl-e">.content</span> {
+      <span class="pl-c1"><span class="pl-c1">width</span></span>: <span class="pl-c1">28</span><span class="pl-k">px</span>;
+      <span class="pl-c1"><span class="pl-c1">height</span></span>: <span class="pl-c1">28</span><span class="pl-k">px</span>;
+      <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">red</span>;
+      <span class="pl-c1"><span class="pl-c1">border</span></span>: <span class="pl-c1">solid</span><span class="pl-c1"> 3</span><span class="pl-k">px</span> <span class="pl-c1">blue</span>;
+    }
+
+    <span class="pl-ent">&amp;</span><span class="pl-e">:checked</span> + <span class="pl-e">.content</span> {
+      <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">green</span>;
+    }
+  }
+
+  <span class="pl-ent">&amp;</span><span class="pl-e">:hover</span> &gt; <span class="pl-e">.input</span> + <span class="pl-e">.content</span> {
+    <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">yellow</span>;
+  }
+
+  <span class="pl-ent">&amp;</span><span class="pl-e">.beautiful</span> {
+    &gt; <span class="pl-e">.input</span> {
+      + <span class="pl-e">.content</span> {
+        <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-id">cyan</span>;
+        <span class="pl-c1"><span class="pl-c1">border-color</span></span>: <span class="pl-c1">lime</span>;
+        <span class="pl-c1"><span class="pl-c1">border-radius</span></span>: <span class="pl-c1">50</span><span class="pl-k">%</span>;
+      }
+
+      <span class="pl-ent">&amp;</span><span class="pl-e">:checked</span> + <span class="pl-e">.content</span> {
+        <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">orange</span>;
+      }
+    }
+
+    <span class="pl-ent">&amp;</span><span class="pl-e">:hover</span> {
+      &gt; <span class="pl-e">.input</span> + <span class="pl-e">.content</span> {
+        <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-id">grey</span>;
+      }
+    }
+  }
+}</pre></div>
+
+<hr>
+
+<p>A better approach: DRY, concise, extensible, refactorable, DOM-like structure:</p>
+
+<div class="highlight highlight-source-scss"><pre><span class="pl-e">.control-checkbox</span> {
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">inline-block</span>;
+  <span class="pl-c1"><span class="pl-c1">cursor</span></span>: <span class="pl-c1">pointer</span>;
+
+  &gt; <span class="pl-e">.input</span> {
+    <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">none</span>;
+
+    + <span class="pl-e">.content</span> {
+      <span class="pl-c1"><span class="pl-c1">width</span></span>: <span class="pl-c1">28</span><span class="pl-k">px</span>;
+      <span class="pl-c1"><span class="pl-c1">height</span></span>: <span class="pl-c1">28</span><span class="pl-k">px</span>;
+      <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">red</span>;
+      <span class="pl-c1"><span class="pl-c1">border</span></span>: <span class="pl-c1">solid</span><span class="pl-c1"> 3</span><span class="pl-k">px</span> <span class="pl-c1">blue</span>;
+
+      <span class="pl-k">@include</span> <span class="pl-c1">when-parent-has-pseudo</span>(<span class="pl-v">checked</span>) {
+        <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">green</span>;        
+      }
+
+      <span class="pl-k">@include</span> <span class="pl-c1">when-root-has-pseudo-class</span>(<span class="pl-v">hover</span>) {
+        <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">yellow</span>;        
+      }
+
+      <span class="pl-k">@include</span> <span class="pl-c1">when-root-has-class</span>(<span class="pl-v">beautiful</span>) {
+        <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-id">cyan</span>;
+        <span class="pl-c1"><span class="pl-c1">border-radius</span></span>: <span class="pl-c1">50</span><span class="pl-k">%</span>;
+        <span class="pl-c1"><span class="pl-c1">border-color</span></span>: <span class="pl-c1">lime</span>;
+
+        <span class="pl-k">@include</span> <span class="pl-c1">when-parent-has-pseudo</span>(<span class="pl-v">checked</span>) {
+          <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">orange</span>;
+        }
+
+        <span class="pl-k">@include</span> <span class="pl-c1">when-root-has-pseudo-class</span>(<span class="pl-v">hover</span>) {
+          <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-id">grey</span>;          
+        }
+      }
+    }
+  }
+}</pre></div>
+
+<hr>
+
+<p>Compiled CSS Code:</p>
+
+<div class="highlight highlight-source-css"><pre><span class="pl-e">.control-checkbox</span> {
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">inline-block</span>;
+  <span class="pl-c1"><span class="pl-c1">cursor</span></span>: <span class="pl-c1">pointer</span>;
+}
+<span class="pl-e">.control-checkbox</span> &gt; <span class="pl-e">.input</span> {
+  <span class="pl-c1"><span class="pl-c1">display</span></span>: <span class="pl-c1">none</span>;
+}
+<span class="pl-e">.control-checkbox</span> &gt; <span class="pl-e">.input</span> + <span class="pl-e">.content</span> {
+  <span class="pl-c1"><span class="pl-c1">width</span></span>: <span class="pl-c1">28<span class="pl-k">px</span></span>;
+  <span class="pl-c1"><span class="pl-c1">height</span></span>: <span class="pl-c1">28<span class="pl-k">px</span></span>;
+  <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">red</span>;
+  <span class="pl-c1"><span class="pl-c1">border</span></span>: <span class="pl-c1">solid</span> <span class="pl-c1">3<span class="pl-k">px</span></span> <span class="pl-c1">blue</span>;
+}
+<span class="pl-e">.control-checkbox</span> &gt; <span class="pl-e">.input</span><span class="pl-e">:checked</span> + <span class="pl-e">.content</span> {
+  <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">green</span>;
+}
+<span class="pl-e">.control-checkbox</span><span class="pl-e">:hover</span> &gt; <span class="pl-e">.input</span> + <span class="pl-e">.content</span> {
+  <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">yellow</span>;
+}
+<span class="pl-e">.beautiful.control-checkbox</span> &gt; <span class="pl-e">.input</span> + <span class="pl-e">.content</span> {
+  <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-id">cyan</span>;
+  <span class="pl-c1"><span class="pl-c1">border-radius</span></span>: <span class="pl-c1">50<span class="pl-k">%</span></span>;
+  <span class="pl-c1"><span class="pl-c1">border-color</span></span>: <span class="pl-c1">lime</span>;
+}
+<span class="pl-e">.beautiful.control-checkbox</span> &gt; <span class="pl-e">.input</span><span class="pl-e">:checked</span> + <span class="pl-e">.content</span> {
+  <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-c1">orange</span>;
+}
+<span class="pl-e">.beautiful.control-checkbox</span><span class="pl-e">:hover</span> &gt; <span class="pl-e">.input</span> + <span class="pl-e">.content</span> {
+  <span class="pl-c1"><span class="pl-c1">background-color</span></span>: <span class="pl-id">grey</span>;
+}</pre></div>
+
+<hr>
+
+<h2>
+<a id="grunt-task" class="anchor" href="#grunt-task" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Grunt task</h2>
+
+<p>ensure namespaces uniqueness in the project's SCSS files at build time
+<br>TBD</p>
+
+<hr>
+
+<h2>
+<a id="scss-lint-configuration" class="anchor" href="#scss-lint-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>scss-lint configuration</h2>
+
+<p>These REALLY assist with getting things in order:</p>
+
+<div class="highlight highlight-source-ruby"><pre>  <span class="pl-c1">DeclarationOrder:</span>
+    <span class="pl-c1">enabled:</span> <span class="pl-c1">true</span>
+
+  <span class="pl-c1">DisableLinterReason:</span>
+    <span class="pl-c1">enabled:</span> <span class="pl-c1">true</span>
+
+  <span class="pl-c1">DuplicateProperty:</span>
+    <span class="pl-c1">enabled:</span> <span class="pl-c1">true</span>
+
+  <span class="pl-c1">SingleLinePerProperty:</span>
+    <span class="pl-c1">enabled:</span> <span class="pl-c1">true</span>
+    <span class="pl-c1">allow_single_line_rule_sets:</span> <span class="pl-c1">false</span>
+
+  <span class="pl-c1">SingleLinePerSelector:</span>
+    <span class="pl-c1">enabled:</span> <span class="pl-c1">true</span>
+
+  <span class="pl-c1">MergeableSelector:</span>
+    <span class="pl-c1">enabled:</span> <span class="pl-c1">true</span>
+    <span class="pl-c1">force_nesting:</span> <span class="pl-c1">true</span>
+
+  <span class="pl-c1">EmptyRule:</span>
+    <span class="pl-c1">enabled:</span> <span class="pl-c1">true</span></pre></div>
+
+<hr>
+
+<h2>
+<a id="what-did-we-achieve" class="anchor" href="#what-did-we-achieve" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What did we achieve?</h2>
+
+<ul>
+<li>All css which affects a certain piece of DOM is always placed next to it in a dedicated scss file. Easy to find and change.</li>
+<li>scss files become less complex, straight-forward and more performant.</li>
+<li>Unifying similar style rules becomes easy; Its all in the same scss file.</li>
+<li>All component style rules are nested in its selector. Nothing at the global scope.</li>
+<li>When refactoring a react component (changing/deleting), its easy to see where all its css is at.</li>
+<li>Easy to reuse an existing selector</li>
+<li>Easy to code without opening a browser</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/rousso1/consass">Consass</a> is maintained by <a href="https://github.com/rousso1">rousso1</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
