@@ -1,58 +1,61 @@
-# *WORK IN PROGRESS*
-# *Easily write concise, DRY, maintainable and scalable SCSS code in a large repo*
+#consass (Concise SASS)
+##Concise SASS. A DRY, maintainable and scalable SCSS solution for styling large scale projects
 
 ---
-
-Table of contents:
-  * [Motivation](#motivation)
-  * [The main problems with CSS at scale](#the-main-problems-with-css-at-scale)
-  * [A holistic solution](#a-holistic-solution)
-   * [Best practices to write DRY and scallable SCSS code](#best-practices-to-write-dry-and-scallable-scss-code)
-   * [The root-selectors.scss library](#the-root-selectors-scss-library)
-   * [A well configured SCSS linter](#a-well-configured-scss-linter)
-   * [A grunt task to enforce namespacing](#a-grunt-task-to-enforce-namespacing)
-  * [A comparison table to other css solutions](#comparison-with-other-css-solutions)
-  * [Conclusion](#conclusion)
+##The main problems with css at large scale apps:
+   * CSS is all at the global namespace (just as js is)
+   * Refactoring is complex; hard to eliminate dead code (dead selectors)
+   * Hard to know the visual output just by looking at the code - usually need to open browser and inspect.
+   * Hard to write scoped styling rules without affecting children, as it should be in a components-based application.
+   * Bloated stylesheets may lead to performance problems.
+   * BEM, Atomic, css modules - its not it.
 
 ---
-
-## Motivation
-CSS (and SCSS) tends to get messy.<br>
-In a small project with just a few contributors, one can probably just read through the whole css code, hack in desired changes, and chances are not much will break. It doesn't matter if the css is ugly - as long as it just works. A glimpse at the output in the browser will tell you if things are working.
-<br>
-A large scale front-end project, with dozens of contributors, thousands of files, components, abstractions and a huge number of possible UI states - requires a different strategy. In this case, the CSS code should be readable and easy for refactoring. And in many cases the person who is about to make changes is not the person who originally wrote the code.
-<br>
+##Ask yourself: are you happy with your project's css the way it is now?
 
 ---
-
-## The main problems with CSS at scale 
-  * CSS is all at the global namespace (just like javascript)
-  * Refactoring is complex; Hard to eliminate dead code (unreachable selectors)
-  * Hard to know the visual output just by looking at the code.
-  * Bloated stylesheets may lead to performance problems.
-  * Its hard to write scoped CSS.
-   
---- 
-
-## A Holistic Solution
+The solution consists of 4 parts:
+  * [Six guidelines for coding style](#guidelines)
+  * [SCSS root-selectors lib](#expressing-a-component-conditional-statesmodes-with-regard-to-the-root-state-class---using-the-root-selectors-library)
+  * [Grunt task](#grunt-task)
+  * [scss-lint yml config file](#scss-lint-configuration)
 
 ---
-####1. The *most important* guideline
- * Stick to your project's components abstraction, and split all css to scss modules accordingly.<br>If a file `filename.html` creates DOM - create a corresponding `filename.scss` scss file next to it, in the same folder.
- * Depending on your choice of framework (Angular, React, Ember or any other), your project has a way it declares DOM. Could be a js component file, an SVG file, an [rt](https://github.com/wix/react-templates) file, haml file, plain html file, etc.
- * `filename.scss` should contain all styling for `filename.html`, and only its styling (e.g not style any of its child components).
- 
----
-#####2. Every scss file should have a *single* root selector matching the root element of the html file. 
+##Guidelines
+By following these guidelines, gain control over the css technical debt in your project. 
+  * Scale as you grow
+  * Refactor easily
+  * Easy to step into someone else's code
+  * Easy to integrate into an existing project
 
-Everything else should be nested. This selector should be unique at the application level, this should be enforced with [a grunt task](#a-grunt-task-to-enforce-namespacing). e.g:
+---
+##The *most important* guideline
+   * Split css to scss modules following the projects components abstraction (e.g. rt files)
+   * For each file `filename.rt`, create a `filename.scss` file next to it in the same folder .
+   * Only write style rules which refer to the DOM structure that belongs to the specific RT. 
+
+---
+##Best practices
+
+---
+#####1. One scss file per rt file (also per svg file, skin, or any other piece of dom/template file). 
+e.g:
+```bash
+angle.rt
+angle.scss
+```
+
+---
+#####2. Every scss file should have a *single* root selector matching the rt root element. 
+
+Everything else should be nested. This selector should be unique at the application level. e.g:
 
 ```scss
-.my-comp {
+.control-angle {
    position: relative;
    height: 10px;
 
-   > .label {
+   > .control-label {
        font-size: 14px;
    } 
 }
@@ -61,50 +64,24 @@ Everything else should be nested. This selector should be unique at the applicat
 ---
 #####3. Styling nested components is done in the nested components corresponding scss file. 
 
-e.g: If `my-comp.html` has a child component `button.html`, the styling of `button.html` is done in `button.scss` (this strictly follows [rule #1 above](#1-the-most-important-guideline)):
-
-If you have something smart to say semantically - define an API (e.g. additional defined classes `.warning`, `.error` for a button component),
-
-If not, and you just want to change the button's style given it has a specific ancestor - use sass parent selector (&).
+e.g: `angle.rt` has a child component `stepper.rt`, and configuring its style is done in `stepper.scss` using a parent selector:
     
 ```scss
-//button.scss:
+//stepper.scss:
 
-.button {
+.input-stepper {
     position: relative;
-    
-    &.warning {
-      color: yellow;
-    }
-    
-    &.error {
-      color: red;
-    }
 
     //overrides:
-    .my-comp & {
-       //when .button has .my-comp as an ancestor, we want to style it differently:
-       position: absolute; 
+    .control-angle & {
+       position: absolute;
     } 
 }
 ```
-This may look like a bad seperation of concerns, and it probably bothers you that `.button` knows about `.my-comp` intimately. And thoughts about how does button.scss go open source from here, and worries that button.scss will get bloated from all the possible overrides it has in the project.<br>
-Well, all of these overrides anyways exist in the project, only they are scattered around different files, probably organized by features, and not by DOM (as [rule #1](#1-the-most-important-guideline) says).<br>
-So refactoring the classname `.button` (e.g rename to `.something-else`) is much harder if you have this css all around your project, where many other components override it.
-Moreover, consider a situation where `.my-comp` and `.my-comp2` both override `.child`. If those overrides won't be placed in the same place inside child.scss, most likely they will duplicate the styling and we'll result with more outputted css. In our case, we will just append `.my-comp2` to the existing selector:
-```scss
-//overrides:
-.my-comp &, 
-.my-comp2 & {
-  position: absolute;
-}
-
-```
-Going open source with button.scss just means we need to delete all the `//overrides` sections. Thats it.
 
 ---
 #####4. Always prefer immediate child selector (>) over regular descendent selector: 
-they perform slightly better, but more important: they prevent bleeding css to nested components!
+they perform better, and they also help preventing bleeding css to nested components.
     
 ```scss
 //dont:
@@ -120,7 +97,6 @@ they perform slightly better, but more important: they prevent bleeding css to n
     }
 }
 ```
-Note: lots of nesting can lead to performance issues. As a rule of thumb - up to 5 nested levels is okay. If you have more - consider splitting your html file into smaller files.
 
 ---
 #####5. Avoid tagName selectors, prefer a semantic class selector:
@@ -157,36 +133,275 @@ Note: lots of nesting can lead to performance issues. As a rule of thumb - up to
 ```
 
 ---
-#####7. Avoid negation pseudo selectors: `:not(.some-class)`
-They are complex, hard to refactor, and there is (almost) always a more clear alternative
+##Expressing a component conditional states/modes with regard to the root state (class) - using the root-selectors library 
 
 ---
+* Given a simple component with some nesting:
 
-#### Best practices to write DRY and scallable SCSS code
-#### root-selectors-helpers.scss library to enhance expression ability
-#### A well configured SCSS linter.
-#### A grunt task to enforce namespacing.
-
----
-
-## Comparison with other css solutions
-  * BEM
-  * OOCSS
-  * SMACSS
-  * SUITCSS
-  * Atomic
-  * Css Modules - extra precompiling needed, can't integrate into existing project
-  
-Main problems:
-* Hard to integrate into an existing project which grew over time, expenssive refactors needed
-* Templating system not be compatible with modules naming systems
-* Extra syntax is introduced, need to learn and teach developers new stuff
-* integrate 3rd-party css? forget it
-* Extra semantics which intend to put things into order, are forigen to the project, and nobody cares about it when they dont last as the project grow
-
+```scss
+.a-root-selector {
+  > .a-first-child {
+    > .a-second-child {
+      color: blue;
+    }
+  }
+}
+```
 
 ---
+If we want `.a-second-child` to receive `color: orange;` when the component has another root class. (e.g. `.show-on-all-pages`), we can use the ancestor selector (`&`):
 
-## Conclusion
+```scss
+.a-root-selector {
+  > .a-first-child {
+    > .a-second-child {
+      color: blue;
+      .show-on-all-pages & {
+        color: orange
+      }
+    }
+  }
+}
+```
 
+---
+It will give us the following css, where `.show-on-all-pages` is an ancestor or `.a-root-selector`:
 
+```css
+.a-root-selector > .a-first-child > .a-second-child {
+  color: blue;
+}
+
+.show-on-all-pages .a-root-selector > .a-first-child > .a-second-child {
+  color: orange;
+}
+```
+
+---
+If you need to have it on the same root selector, you'll need to use a mixin:
+```scss
+.a-root-selector {
+  > .a-first-child {
+    > .a-second-child {
+      color: blue;
+      @include when-root-has-class(show-on-all-pages) {
+        color: orange;
+      }
+    }
+  }
+}
+```
+
+---
+Will give you the following css (note there is no space)
+```css
+.a-root-selector > .a-first-child > .a-second-child {
+  color: blue;
+}
+
+.show-on-all-pages.a-root-selector > .a-first-child > .a-second-child {
+  color: orange;
+}
+```
+
+---
+Similarly, the following SCSS mixins are available for your use as part of the framework:<br><br>
+Classes modes for a selector:<br>
+* `when-root-has-class($class-name)`: when the specified classes is authored on the root level.
+* `when-root-has-any-class($class-names)`: one of the specified classes (one or many) is authored on the root level
+* `when-root-has-all-classes($class-names)`: all specified classes (one or many) are authored on the root level
+
+---
+Pseudo class modes for a selector:<br>
+* `when-root-has-pseudo-class($pseudo-class)`: The specified pseudo class is authored on the root level
+* `when-root-has-all-pseudo-classes($pseudo-classes)`: all specified pseudo classes are authored on the root level
+* `when-root-has-any-pseudo-classes($pseudo-class-names)`: any of the specified pseudo classes are authored on the root level.
+
+---
+class and pseudo-class together<br>
+* `when-root-has-all($class-names, $pseudo-class-names)`: all specified combination of class names and pseudo classes are authored on the root level.
+* `when-root-has-any($class-names, $pseudo-class-names)`: any of the specified combination of class names/pseudo class names are authored on the root level.
+
+---
+Ancestor conditions:<br>
+* `when-parent-has-pseudo($pseudo-classes)`: if previous part of selector has the specified pseudo classes, apply the styling.
+* `when-ancestor-has-pseudo($pseudo-classes, $levels)`: when an ancestor up the selector has the specified pseudo classes, apply the styling. The ancestor is specified by an number of levels up the selector.
+* see [root selector helpers](https://github.com/wix/santa-editor/blob/master/packages/baseUI/src/main/framework/rootSelectorHelpers.scss)
+
+---
+##Example: A custom checkbox 
+  * Specified colors for various different modes (regular / hover / selected)
+  * Needs to have a "beautiful" mode which specifies different styling.
+(See the Pen <a href='http://codepen.io/eitaneitan/pen/zqeMZM/'>zqeMZM</a> by Eitan (<a href='http://codepen.io/eitaneitan'>@eitaneitan</a>) on <a href='http://codepen.io'>CodePen</a>.)
+
+```html
+<label class="control-checkbox">
+  <input type="checkbox" class="input" />
+  <div class="content"></div>
+</label>
+```
+
+---
+```scss
+.control-checkbox {
+  display: inline-block;
+  cursor: pointer;
+
+  > .input {
+    display: none;
+
+    + .content {
+      width: 28px;
+      height: 28px;
+      background-color: red;
+      border: solid 3px blue;
+    }
+
+    &:checked + .content {
+      background-color: green;
+    }
+  }
+
+  &:hover > .input + .content {
+    background-color: yellow;
+  }
+
+  &.beautiful {
+    > .input {
+      + .content {
+        background-color: cyan;
+        border-color: lime;
+        border-radius: 50%;
+      }
+      
+      &:checked + .content {
+        background-color: orange;
+      }
+    }
+    
+    &:hover {
+      > .input + .content {
+        background-color: grey;
+      }
+    }
+  }
+}
+```
+
+---
+A better approach: DRY, concise, extensible, refactorable, DOM-like structure:
+```scss
+.control-checkbox {
+  display: inline-block;
+  cursor: pointer;
+
+  > .input {
+    display: none;
+
+    + .content {
+      width: 28px;
+      height: 28px;
+      background-color: red;
+      border: solid 3px blue;
+      
+      @include when-parent-has-pseudo(checked) {
+        background-color: green;        
+      }
+      
+      @include when-root-has-pseudo-class(hover) {
+        background-color: yellow;        
+      }
+      
+      @include when-root-has-class(beautiful) {
+        background-color: cyan;
+        border-radius: 50%;
+        border-color: lime;
+        
+        @include when-parent-has-pseudo(checked) {
+          background-color: orange;
+        }
+        
+        @include when-root-has-pseudo-class(hover) {
+          background-color: grey;          
+        }
+      }
+    }
+  }
+}
+```
+
+---
+Compiled CSS Code:
+```css
+.control-checkbox {
+  display: inline-block;
+  cursor: pointer;
+}
+.control-checkbox > .input {
+  display: none;
+}
+.control-checkbox > .input + .content {
+  width: 28px;
+  height: 28px;
+  background-color: red;
+  border: solid 3px blue;
+}
+.control-checkbox > .input:checked + .content {
+  background-color: green;
+}
+.control-checkbox:hover > .input + .content {
+  background-color: yellow;
+}
+.beautiful.control-checkbox > .input + .content {
+  background-color: cyan;
+  border-radius: 50%;
+  border-color: lime;
+}
+.beautiful.control-checkbox > .input:checked + .content {
+  background-color: orange;
+}
+.beautiful.control-checkbox:hover > .input + .content {
+  background-color: grey;
+}
+```
+---
+##Grunt task 
+ensure namespaces uniqueness in the project's SCSS files at build time
+<br>TBD
+
+---
+##scss-lint configuration
+These REALLY assist with getting things in order:
+```ruby
+  DeclarationOrder:
+    enabled: true
+
+  DisableLinterReason:
+    enabled: true
+
+  DuplicateProperty:
+    enabled: true
+
+  SingleLinePerProperty:
+    enabled: true
+    allow_single_line_rule_sets: false
+
+  SingleLinePerSelector:
+    enabled: true
+
+  MergeableSelector:
+    enabled: true
+    force_nesting: true
+
+  EmptyRule:
+    enabled: true
+```
+---
+##What did we achieve?
+   * All css which affects a certain piece of DOM is always placed next to it in a dedicated scss file. Easy to find and change.
+   * scss files become less complex, straight-forward and more performant.
+   * Unifying similar style rules becomes easy; Its all in the same scss file.
+   * All component style rules are nested in its selector. Nothing at the global scope.
+   * When refactoring a react component (changing/deleting), its easy to see where all its css is at.
+   * Easy to reuse an existing selector
+   * Easy to code without opening a browser
