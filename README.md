@@ -1,5 +1,5 @@
 #consass (Concise SASS)
-##Concise SASS. A DRY, maintainable and scalable SCSS solution for styling large scale projects
+##A DRY, maintainable and scalable SCSS solution for styling large scale projects
 
 ---
 ##The main problems with css at large scale apps:
