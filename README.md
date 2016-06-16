@@ -1,7 +1,6 @@
 
 ##Concise, DRY, maintainable and scalable SCSS solution for styling large scale projects
 
-
 ---
 ##The main problems with css at large scale apps:
    * CSS is all at the global namespace (just as js is)
@@ -10,9 +9,6 @@
    * Hard to write scoped styling rules without affecting children, as it should be in a components-based application.
    * Bloated stylesheets may lead to performance problems.
    * BEM, Atomic, css modules - its not it.
-
----
-##Ask yourself: are you happy with your project's css the way it is now?
 
 ---
 The solution consists of 4 parts:
