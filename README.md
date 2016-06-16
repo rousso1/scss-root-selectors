@@ -1,5 +1,5 @@
 
-##Concise, DRY, maintainable and scalable SCSS solution for styling large scale projects — Edit
+##Concise, DRY, maintainable and scalable SCSS solution for styling large scale projects
 
 
 ---
