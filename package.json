@@ -1,0 +1,19 @@
+{
+  "name": "scss-root-selectors",
+  "version": "1.0.0",
+  "description": "Concise, DRY, maintainable and scalable SCSS solution for styling large scale projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rousso1/scss-root-selectors.git"
+  },
+  "author": "rousso1",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rousso1/scss-root-selectors/issues"
+  },
+  "homepage": "https://github.com/rousso1/scss-root-selectors#readme"
+}
