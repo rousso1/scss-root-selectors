@@ -15,7 +15,7 @@
 ```
 
 ---
-If we want `.another-child` to receive `color: orange;` when the component has another root class. (e.g. `.special`), we can use the ancestor selector (`&`):
+If we want `.another-child` to receive `color: orange;` when the component has another root class. (e.g. `.special`), we can (try to) use [the ancestor selector](http://thesassway.com/intermediate/referencing-parent-selectors-using-ampersand) (`&`):
 
 ```scss
 .comp-root-selector {
@@ -31,7 +31,7 @@ If we want `.another-child` to receive `color: orange;` when the component has a
 ```
 
 ---
-It will yield the following css, where `.special` is an ancestor or `.comp-root-selector`:
+It will yield the following css, where `.special` is an ancestor or `.comp-root-selector` (note the space between them):
 
 ```css
 .comp-root-selector > .child > .another-child {
@@ -44,7 +44,7 @@ It will yield the following css, where `.special` is an ancestor or `.comp-root-
 ```
 
 ---
-If you need to have it on the same root selector, use a mixin:
+If you need to have it on the same root selector, use the library's mixin:
 ```scss
 .comp-root-selector {
   > .child {
@@ -84,12 +84,19 @@ Pseudo class modes for a selector:<br>
 * `when-root-has-any-pseudo-classes($pseudo-class-names)`: any of the specified pseudo classes are authored on the root level.
 
 ---
-class and pseudo-class together<br>
-* `when-root-has-all($class-names, $pseudo-class-names)`: all specified combination of class names and pseudo classes are authored on the root level.
-* `when-root-has-any($class-names, $pseudo-class-names)`: any of the specified combination of class names/pseudo class names are authored on the root level.
+Attribute modes for a selector:<br>
+* `when-root-has-attr($pseudo-class)`: The specified attribute selector is authored on the root level
+* `when-root-has-all-attrs($pseudo-classes)`: all specified attribute selector are authored on the root level
+* `when-root-has-any-attrs($pseudo-class-names)`: any of the specified attribute selector are authored on the root level.
+* `create-attr-selector($name, $value)`: a shorthand for the [name="value"] attribute selector string. use as a constructor for convenience
 
 ---
-Ancestor conditions:<br>
+Any combination:<br>
+* `when-root-has-all($class-names, $pseudo-class-names, $attr-selectors)`: all specified combination of class names,  pseudo class names and attribute selectors, authored on the root level.
+* `when-root-has-any($class-names, $pseudo-class-names, $attr-selectors)`: any of the specified combination of class names/pseudo class names/attribute selectors are authored on the root level.
+
+---
+Advanced: Ancestor pseudo conditions:<br>
 * `when-parent-has-pseudo($pseudo-classes)`: if previous part of selector has the specified pseudo classes, apply the styling.
 * `when-ancestor-has-pseudo($pseudo-classes, $levels)`: when an ancestor up the selector has the specified pseudo classes, apply the styling. The ancestor is specified by an number of levels up the selector.
 * see [root selector helpers](https://github.com/wix/santa-editor/blob/master/packages/baseUI/src/main/framework/rootSelectorHelpers.scss)
@@ -230,14 +237,10 @@ Compiled CSS Code:
   background-color: grey;
 }
 ```
----
-##Grunt task 
-ensure namespaces uniqueness in the project's SCSS files at build time
-<br>TBD
 
 ---
-##scss-lint configuration
-These REALLY assist with getting things in order:
+##Recommended [scss-lint](https://github.com/brigade/scss-lint) configuration
+It really assists with getting things in order:
 ```ruby
   DeclarationOrder:
     enabled: true
@@ -262,12 +265,4 @@ These REALLY assist with getting things in order:
   EmptyRule:
     enabled: true
 ```
----
-##What did we achieve?
-   * All css which affects a certain piece of DOM is always placed next to it in a dedicated scss file. Easy to find and change.
-   * scss files become less complex, straight-forward and more performant.
-   * Unifying similar style rules becomes easy; Its all in the same scss file.
-   * All component style rules are nested in its selector. Nothing at the global scope.
-   * When refactoring a react component (changing/deleting), its easy to see where all its css is at.
-   * Easy to reuse an existing selector
-   * Easy to code without opening a browser
+
