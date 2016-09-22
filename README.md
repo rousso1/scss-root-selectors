@@ -1,144 +1,13 @@
+##Express a conditional states/modes with regard to the root state (class)
 
-##Concise, DRY, maintainable and scalable SCSS solution for styling large scale projects
-
+###Motivation
 ---
-##The main problems with css at large scale apps:
-   * CSS is all at the global namespace (just as js is)
-   * Refactoring is complex; hard to eliminate dead code (dead selectors)
-   * Hard to know the visual output just by looking at the code - usually need to open browser and inspect.
-   * Hard to write scoped styling rules without affecting children, as it should be in a components-based application.
-   * Bloated stylesheets may lead to performance problems.
-   * BEM, Atomic, css modules - its not it.
-
----
-The solution consists of 4 parts:
-  * [Six guidelines for coding style](#guidelines)
-  * [SCSS root-selectors lib](#expressing-a-component-conditional-statesmodes-with-regard-to-the-root-state-class---using-the-root-selectors-library)
-  * [Grunt task](#grunt-task)
-  * [scss-lint yml config file](#scss-lint-configuration)
-
----
-##Guidelines
-By following these guidelines, gain control over the css technical debt in your project. 
-  * Scale as you grow
-  * Refactor easily
-  * Easy to step into someone else's code
-  * Easy to integrate into an existing project
-
----
-##The *most important* guideline
-   * Split css to scss modules following the projects components abstraction (e.g. rt files)
-   * For each file `filename.rt`, create a `filename.scss` file next to it in the same folder .
-   * Only write style rules which refer to the DOM structure that belongs to the specific RT. 
-
----
-##Best practices
-
----
-#####1. One scss file per rt file (also per svg file, skin, or any other piece of dom/template file). 
-e.g:
-```bash
-angle.rt
-angle.scss
-```
-
----
-#####2. Every scss file should have a *single* root selector matching the rt root element. 
-
-Everything else should be nested. This selector should be unique at the application level. e.g:
+* Given a simple component css with some nesting:
 
 ```scss
-.control-angle {
-   position: relative;
-   height: 10px;
-
-   > .control-label {
-       font-size: 14px;
-   } 
-}
-```
-
----
-#####3. Styling nested components is done in the nested components corresponding scss file. 
-
-e.g: `angle.rt` has a child component `stepper.rt`, and configuring its style is done in `stepper.scss` using a parent selector:
-    
-```scss
-//stepper.scss:
-
-.input-stepper {
-    position: relative;
-
-    //overrides:
-    .control-angle & {
-       position: absolute;
-    } 
-}
-```
-
----
-#####4. Always prefer immediate child selector (>) over regular descendent selector: 
-they perform better, and they also help preventing bleeding css to nested components.
-    
-```scss
-//dont:
-.parent-class {
-    //dont:
-    .child-class {
-        color: red;
-    }
-
-    //do:
-    > .child-class {
-        color: red;
-    }
-}
-```
-
----
-#####5. Avoid tagName selectors, prefer a semantic class selector:
-
-```scss
-.component {
-    //dont:
-    span {
-        font-size: 14px;
-    }
-    
-    //do:
-    > .button-label {
-            font-size: 14px;
-        }
-    }
-}
-```
-
----
-#####6. Avoid wildcard selectors (*) - they affect child components and bleed css.
-```scss
-//dont:
-* {
-
-}
-
-//do: specify what you style
-.selector1,
-.selector2, 
-.selector3 {
-        //css here
-}
-```
-
----
-##Expressing a component conditional states/modes with regard to the root state (class) - using the root-selectors library 
-
----
-* Given a simple component with some nesting:
-
-```scss
-.a-root-selector {
-  > .a-first-child {
-    > .a-second-child {
+.comp-root-selector {
+  > .child {
+    > .another-child {
       color: blue;
     }
   }
@@ -146,14 +15,14 @@ they perform better, and they also help preventing bleeding css to nested compon
 ```
 
 ---
-If we want `.a-second-child` to receive `color: orange;` when the component has another root class. (e.g. `.show-on-all-pages`), we can use the ancestor selector (`&`):
+If we want `.another-child` to receive `color: orange;` when the component has another root class. (e.g. `.special`), we can use the ancestor selector (`&`):
 
 ```scss
-.a-root-selector {
-  > .a-first-child {
-    > .a-second-child {
+.comp-root-selector {
+  > .child {
+    > .another-child {
       color: blue;
-      .show-on-all-pages & {
+      .special & {
         color: orange
       }
     }
@@ -162,26 +31,26 @@ If we want `.a-second-child` to receive `color: orange;` when the component has 
 ```
 
 ---
-It will give us the following css, where `.show-on-all-pages` is an ancestor or `.a-root-selector`:
+It will yield the following css, where `.special` is an ancestor or `.comp-root-selector`:
 
 ```css
-.a-root-selector > .a-first-child > .a-second-child {
+.comp-root-selector > .child > .another-child {
   color: blue;
 }
 
-.show-on-all-pages .a-root-selector > .a-first-child > .a-second-child {
+.special .comp-root-selector > .child > .another-child {
   color: orange;
 }
 ```
 
 ---
-If you need to have it on the same root selector, you'll need to use a mixin:
+If you need to have it on the same root selector, use a mixin:
 ```scss
-.a-root-selector {
-  > .a-first-child {
-    > .a-second-child {
+.comp-root-selector {
+  > .child {
+    > .another-child {
       color: blue;
-      @include when-root-has-class(show-on-all-pages) {
+      @include when-root-has-class(special) {
         color: orange;
       }
     }
@@ -190,15 +59,15 @@ If you need to have it on the same root selector, you'll need to use a mixin:
 ```
 
 ---
-Will give you the following css (note there is no space)
+Will give the following (desired) css (note there is no space)
 ```css
-.a-root-selector > .a-first-child > .a-second-child {
+.comp-root-selector > .child > .another-child {
   color: blue;
 }
-
-.show-on-all-pages.a-root-selector > .a-first-child > .a-second-child {
+.special.comp-root-selector > .child > .another-child {
   color: orange;
 }
+
 ```
 
 ---
