@@ -2,7 +2,7 @@
 
 ###Motivation
 ---
-* Given a simple component css with some nesting:
+Given a simple component CSS with some nesting:
 
 ```scss
 .comp-root-selector {
@@ -15,13 +15,14 @@
 ```
 
 ---
-If we want `.another-child` to receive `color: orange;` when the component has another root class. (e.g. `.special`), we can (try to) use [the ancestor selector](http://thesassway.com/intermediate/referencing-parent-selectors-using-ampersand) (`&`):
+`.another-child` should get `color: orange;` when `.comp-root-selector` is appended with an additional class: `.special`. Let's examine with using the built in [ancestor selector](http://thesassway.com/intermediate/referencing-parent-selectors-using-ampersand) (`&`):
 
 ```scss
 .comp-root-selector {
   > .child {
     > .another-child {
       color: blue;
+      
       .special & {
         color: orange
       }
@@ -31,7 +32,7 @@ If we want `.another-child` to receive `color: orange;` when the component has a
 ```
 
 ---
-It will yield the following css, where `.special` is an ancestor or `.comp-root-selector` (note the space between them):
+It will yield the following CSS, where `.special` is an ancestor or `.comp-root-selector` (note the space between them):
 
 ```css
 .comp-root-selector > .child > .another-child {
@@ -50,6 +51,7 @@ If you need to have it on the same root selector, use the library's mixin:
   > .child {
     > .another-child {
       color: blue;
+      
       @include when-root-has-class(special) {
         color: orange;
       }
@@ -59,7 +61,7 @@ If you need to have it on the same root selector, use the library's mixin:
 ```
 
 ---
-Will give the following (desired) css (note there is no space)
+Will yield the following (desired) CSS (note there is no space)
 ```css
 .comp-root-selector > .child > .another-child {
   color: blue;
@@ -71,7 +73,7 @@ Will give the following (desired) css (note there is no space)
 ```
 
 ---
-Similarly, the following SCSS mixins are available for your use as part of the framework:<br><br>
+Similarly, the following SCSS mixins are available as part of the library:<br><br>
 Classes modes for a selector:<br>
 * `when-root-has-class($class-name)`: when the specified classes is authored on the root level.
 * `when-root-has-any-class($class-names)`: one of the specified classes (one or many) is authored on the root level
@@ -105,7 +107,7 @@ Advanced: Ancestor pseudo conditions:<br>
 ##Example: A custom checkbox 
   * Specified colors for various different modes (regular / hover / selected)
   * Needs to have a "beautiful" mode which specifies different styling.
-(See the Pen <a href='http://codepen.io/eitaneitan/pen/zqeMZM/'>zqeMZM</a> by Eitan (<a href='http://codepen.io/eitaneitan'>@eitaneitan</a>) on <a href='http://codepen.io'>CodePen</a>.)
+(See <a href='http://codepen.io/eitaneitan/pen/zqeMZM/'>Pen</a> by <a href='http://codepen.io/eitaneitan'>@eitaneitan</a> on <a href='http://codepen.io'>CodePen</a>.)
 
 ```html
 <label class="control-checkbox">
