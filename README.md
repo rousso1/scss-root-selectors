@@ -32,7 +32,7 @@ Given a simple component CSS with some nesting:
 ```
 
 ---
-It will yield the following CSS, where `.special` is an ancestor or `.comp-root-selector` (note the space between them):
+It will yield the following CSS, where `.special` is an ancestor or `.comp-root-selector`. Note the space between them:
 
 ```css
 .comp-root-selector > .child > .another-child {
@@ -61,7 +61,7 @@ If you need to have it on the same root selector, use the library's mixin:
 ```
 
 ---
-Will yield the following (desired) CSS (note there is no space)
+Will yield the following (desired) CSS. Note: there is no space.
 ```css
 .comp-root-selector > .child > .another-child {
   color: blue;
