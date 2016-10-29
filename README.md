@@ -61,7 +61,7 @@ If you need to have it on the same root selector, use the library's mixin:
 ```
 
 ---
-Will yield the following (desired) CSS. Note: there is no space.
+Will yield the following (desired) CSS. Note: there is no space in `.special.comp-root-selector`.
 ```css
 .comp-root-selector > .child > .another-child {
   color: blue;
