@@ -2,7 +2,7 @@
 
 ###Motivation
 
-Components have various modes which are toggled class names on the root node. Express SCSS concisely and refer to root node modes, without losing the scope you style
+Components have various modes which are turned on/off by toggling class names on the root node. Express SCSS concisely and refer to root node modes, without losing the scope you style and maintain the same DOM hierarchy inside the SCSS file.
 
 ---
 Given a simple component CSS with some nesting:
