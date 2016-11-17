@@ -1,6 +1,7 @@
 ##Express a conditional states/modes with regard to the root state (class)
 
 ###Motivation
+Components have various modes which are toggled class names on the root node. Express SCSS concisely and refer to root node modes, without losing the scope you style
 ---
 Given a simple component CSS with some nesting:
 
