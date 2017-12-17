@@ -1,0 +1,11 @@
+@import "rootSelectors";
+
+@mixin when-global-has-class($class-name) {
+  :global {
+    @include when-root-has-class($class-name)
+  }
+
+  :local {
+    @content
+  }
+}
